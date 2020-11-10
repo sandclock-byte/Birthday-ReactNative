@@ -1,28 +1,37 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { StyleSheet, Text, TouchableOpacity, TextInput, View } from 'react-native';
 
 export default function RegisterForm(props) {
     const { changeForm } = props;
+    const [formData, setFormData] = useState(defaultValue());
+
+    const imprimir = () => {
+        console.log(formData)
+    }
+
     return (
         <>
             <TextInput
                 style={styles.input}
                 placeholder='Correo electronico'
                 placeholderTextColor='#969696'
-            />
+                onChange={(e) => setFormData({...formData, email: e.nativeEvent.text})}
+                />
             <TextInput
                 style={styles.input}
                 placeholder='Contraseña'
                 placeholderTextColor='#969696'
                 secureTextEntry={true}
+                onChange={(e) => setFormData({...formData, password: e.nativeEvent.text})}
                 />
             <TextInput
                 style={styles.input}
                 placeholder='Repetir contraseña'
                 placeholderTextColor='#969696'
                 secureTextEntry={true}
+                onChange={(e) => setFormData({...formData, repeatPassword: e.nativeEvent.text})}
             />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={imprimir}>
                 <Text style={styles.btnText}>Registrate</Text>
             </TouchableOpacity>
 
@@ -33,6 +42,14 @@ export default function RegisterForm(props) {
             </View>
         </>
     );
+}
+
+const defaultValue = () => {
+    return {
+        email: '',
+        password: '',
+        repeatPassword: '',
+    }
 }
 
 const styles = StyleSheet.create({
