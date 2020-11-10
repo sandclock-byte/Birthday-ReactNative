@@ -1,37 +1,57 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, TextInput, View } from 'react-native';
+import { validateEmail } from '../utils/validations'
 
 export default function RegisterForm(props) {
     const { changeForm } = props;
     const [formData, setFormData] = useState(defaultValue());
+    const [formError, setFormError] = useState({});
 
-    const imprimir = () => {
-        console.log(formData)
+    let errors;
+
+    const register = () => {
+        errors = {};
+        if (!formData.email || !formData.password || !formData.repeatPassword) {
+            if (!formData.email) errors.email = true;
+            if (!formData.password) errors.password = true;
+            if (!formData.repeatPassword) errors.repeatPassword = true;
+        } else if (!validateEmail(formData.email)) {
+            errors.email = true;
+        } else if (formData.password !== formData.repeatPassword) {
+            errors.password = true;
+            errors.repeatPassword = true;
+        } else if (formData.password < 6) {
+            errors.password = true;
+            errors.repeatPassword = true;
+        } else {
+            console.log('Formulario corecto');
+        }
+        setFormError(errors);
     }
 
     return (
         <>
             <TextInput
-                style={styles.input}
+                style={[styles.input, formError.email && styles.error]}
                 placeholder='Correo electronico'
                 placeholderTextColor='#969696'
-                onChange={(e) => setFormData({...formData, email: e.nativeEvent.text})}
-                />
+                onChange={(e) => setFormData({ ...formData, email: e.nativeEvent.text.trim() })}
+            />
             <TextInput
-                style={styles.input}
+                style={[styles.input, formError.password && styles.error]}
                 placeholder='Contraseña'
                 placeholderTextColor='#969696'
                 secureTextEntry={true}
-                onChange={(e) => setFormData({...formData, password: e.nativeEvent.text})}
-                />
+                onChange={(e) => setFormData({ ...formData, password: e.nativeEvent.text.trim() })}
+            />
             <TextInput
-                style={styles.input}
+                style={[styles.input, formError.repeatPassword && styles.error]}
                 placeholder='Repetir contraseña'
                 placeholderTextColor='#969696'
                 secureTextEntry={true}
-                onChange={(e) => setFormData({...formData, repeatPassword: e.nativeEvent.text})}
+                onChange={(e) => setFormData({ ...formData, repeatPassword: e.nativeEvent.text.trim() })}
             />
-            <TouchableOpacity onPress={imprimir}>
+            <TouchableOpacity onPress={register}>
                 <Text style={styles.btnText}>Registrate</Text>
             </TouchableOpacity>
 
@@ -75,5 +95,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         marginBottom: 10
-    }
+    },
+
+    error: {
+        borderColor: '#940C0C'
+    },
 });
