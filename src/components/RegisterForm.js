@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, TextInput, View } from 'react-native';
-import { validateEmail } from '../utils/validations'
+import { validateEmail } from '../utils/validations';
+import firebase from '../utils/firebase';
 
 export default function RegisterForm(props) {
     const { changeForm } = props;
     const [formData, setFormData] = useState(defaultValue());
     const [formError, setFormError] = useState({});
 
-    let errors;
-
     const register = () => {
-        errors = {};
+        let errors = {};
         if (!formData.email || !formData.password || !formData.repeatPassword) {
             if (!formData.email) errors.email = true;
             if (!formData.password) errors.password = true;
@@ -24,7 +23,18 @@ export default function RegisterForm(props) {
             errors.password = true;
             errors.repeatPassword = true;
         } else {
-            console.log('Formulario corecto');
+            firebase
+                .auth()
+                .createUserWithEmailAndPassword(formData.email, formData.password)
+                .then(() => {
+                    console.log('Cuenta creada');
+                }).catch(() => {
+                    setFormError({
+                        email: true,
+                        password: true,
+                        repeatPassword: true,
+                    });
+                });
         }
         setFormError(errors);
     }
