@@ -19,7 +19,15 @@ export default function LoginForm(props) {
         } else if (formData.password < 6) {
             errors.password = true;
         } else {
-            console.log('Login OK');
+           firebase
+           .auth()
+           .signInWithEmailAndPassword(formData.email, formData.password)
+           .catch(() => {
+               setFormError({
+                   email: true,
+                   password: true,
+               });
+           });
         }
         setFormError(errors);
     }
