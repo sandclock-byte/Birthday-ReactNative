@@ -8,6 +8,10 @@ export default function RegisterForm(props) {
     const [formData, setFormData] = useState(defaultValue());
     const [formError, setFormError] = useState({});
 
+    const onChange = (e, type) => {
+        setFormData({ ...formData, [type]: e.nativeEvent.text.trim() });
+    }
+
     const register = () => {
         let errors = {};
         if (!formData.email || !formData.password || !formData.repeatPassword) {
@@ -45,21 +49,21 @@ export default function RegisterForm(props) {
                 style={[styles.input, formError.email && styles.error]}
                 placeholder='Correo electronico'
                 placeholderTextColor='#969696'
-                onChange={(e) => setFormData({ ...formData, email: e.nativeEvent.text.trim() })}
+                onChange={(e) => onChange(e, 'email')}
             />
             <TextInput
                 style={[styles.input, formError.password && styles.error]}
                 placeholder='Contraseña'
                 placeholderTextColor='#969696'
                 secureTextEntry={true}
-                onChange={(e) => setFormData({ ...formData, password: e.nativeEvent.text.trim() })}
+                onChange={(e) => onChange(e, 'password')}
             />
             <TextInput
                 style={[styles.input, formError.repeatPassword && styles.error]}
                 placeholder='Repetir contraseña'
                 placeholderTextColor='#969696'
                 secureTextEntry={true}
-                onChange={(e) => setFormData({ ...formData, repeatPassword: e.nativeEvent.text.trim() })}
+                onChange={(e) => onChange(e, 'repeatPassword')}
             />
             <TouchableOpacity onPress={register}>
                 <Text style={styles.btnText}>Registrate</Text>
