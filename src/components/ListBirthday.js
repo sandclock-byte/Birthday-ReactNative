@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import AddBirthday from './AddBirthday';
 import ActionBar from './ActionBar';
 
 export default function ListBirthday() {
+    const [showList, setShowList] = useState(true);
     return (
-        <View style= {styles.container}>
-            <Text>Hola Mundo!</Text>
-            <ActionBar />
+        <View style={styles.container}>
+            {showList ? (
+                <>
+                    <Text>LIST</Text>
+                    <Text>LIST</Text>
+                    <Text>LIST</Text>
+                    <Text>LIST</Text>
+                    <Text>LIST</Text>
+                    <Text>LIST</Text>
+                    <Text>LIST</Text>
+                </>
+            ) : (
+                    <AddBirthday />
+                )}
+            <ActionBar showList= {showList} setShowList={setShowList} />
         </View>
     )
 }
