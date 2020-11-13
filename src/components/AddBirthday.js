@@ -7,6 +7,7 @@ export default function AddBirthday() {
 
     const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
     const [formData, setFormData] = useState({});
+    const [formError, setFormError] = useState({});
 
     const hideDatePicker = () => {
         setIsDatePickerVisible(false);
@@ -30,25 +31,34 @@ export default function AddBirthday() {
     };
 
     const onSubmit = () => {
-        console.log(formData);
+        let errors = {};
+        if(!formData.name || !formData.lastname || !formData.dateBirth) {
+            if(!formData.name) errors.name = true;
+            if(!formData.lastname) errors.lastname = true;
+            if(!formData.dateBirth) errors.dateBirth = true;
+        } else {
+            console.log('Ok');
+        }
+        
+        setFormError(errors);
     };
 
     return (
         <>
             <View style={styles.container}>
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, formError.name && styles.error]}
                     placeholder='Nombre'
                     placeholderTextColor='#969696'
-                    onChange={(e) => onChange(e, 'nombre')}
+                    onChange={(e) => onChange(e, 'name')}
                 />
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, formError.lastname && styles.error]}
                     placeholder='Apellidos'
                     placeholderTextColor='#969696'
-                    onChange={(e) => onChange(e, 'apellidos')}
+                    onChange={(e) => onChange(e, 'lastname')}
                 />
-                <View style={[styles.input, styles.datepicker]}>
+                <View style={[styles.input, styles.datepicker, formError.dateBirth && styles.error]}>
                     <Text style={{
                         color: formData.dateBirth ? '#FFF' : '#969696',
                         fontSize: 18,
@@ -102,5 +112,9 @@ const styles = StyleSheet.create({
     addButton: {
         fontSize: 18,
         color: '#FFF',
-    }
+    },
+
+    error: {
+        borderColor: '#940C0C'
+    },
 })
