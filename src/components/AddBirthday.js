@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import moment from 'moment';
+import firebase from '../utils/firebase';
+import 'firebase/firestore';
+
+firebase.firestore().settings({experimentalForceLongPolling: true});
+const db = firebase.firestore(firebase);
 
 export default function AddBirthday() {
 
@@ -32,14 +37,24 @@ export default function AddBirthday() {
 
     const onSubmit = () => {
         let errors = {};
-        if(!formData.name || !formData.lastname || !formData.dateBirth) {
-            if(!formData.name) errors.name = true;
-            if(!formData.lastname) errors.lastname = true;
-            if(!formData.dateBirth) errors.dateBirth = true;
+        if (!formData.name || !formData.lastname || !formData.dateBirth) {
+            if (!formData.name) errors.name = true;
+            if (!formData.lastname) errors.lastname = true;
+            if (!formData.dateBirth) errors.dateBirth = true;
         } else {
-            console.log('Ok');
+            const data = formData;
+            data.dateBirth.setYear(0);
+            
+            db.collection('cumples')
+                .add(data)
+                .then(() => {
+                    console.log('OK');
+                })
+                .catch(() => {
+                    setFormError({ name: true, lastname: true, dateBirth: true });
+                });
         }
-        
+
         setFormError(errors);
     };
 
@@ -68,7 +83,7 @@ export default function AddBirthday() {
                     </Text>
                 </View>
                 <TouchableOpacity onPress={onSubmit}>
-                    <Text style= {styles.addButton}>Crear cumpleaños</Text>
+                    <Text style={styles.addButton}>Crear cumpleaños</Text>
                 </TouchableOpacity>
             </View>
 
